@@ -1,6 +1,8 @@
 <?php
 /**
  * Class autoload principle
+ *
+ * @noinspection PhpIncludeInspection
  */
 spl_autoload_register(function ($class) {
 	$parts = explode('\\', $class);
@@ -19,9 +21,9 @@ spl_autoload_register(function ($class) {
 			if ($filename = strtolower(array_pop($parts))) {
 				foreach (
 					[
-						'controller' => ['/app/', '/app/controllers/', '/includes/app/controllers/'],
-						'model' => ['/app/', '/app/models/', '/includes/app/models/'],
-						'helper' => ['/app/'],
+						'controller' => ['/app/', '/app/controllers/'],
+						'model' => ['/app/', '/app/models/'],
+						'helper' => ['/app/', '/app/helpers/'],
 						'router' => [],
 					]
 					as $pattern => $paths
@@ -49,7 +51,6 @@ spl_autoload_register(function ($class) {
 			break;
 		default:
 			throw new \Exception('Unknown namespace ' . $class);
-			break;
 	}
 });
 
@@ -80,7 +81,7 @@ if (isset($_ENV['APP_ENV'])) {
  * Enable system errors
  */
 if (isset($_ENV['SYS_DEBUG']) && $_ENV['SYS_DEBUG'] == 'true') {
-	ini_set('display_errors', 1);
-	ini_set('display_startup_errors', 1);
+	ini_set('display_errors', '1');
+	ini_set('display_startup_errors', '1');
 	error_reporting(E_ALL);
 }
