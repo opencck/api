@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<psalm
+    autoloader="bootstrap.php"
+    errorLevel="7"
+    resolveFromConfigFile="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+    <projectFiles>
+        <file name="bootstrap.php" />
+        <file name="app/controller.php" />
+        <file name="app/model.php" />
+        <file name="app/router.php" />
+        <file name="classes/App.php" />
+        <file name="classes/DB.php" />
+        <file name="classes/Exception.php" />
+        <file name="classes/Input.php" />
+        <file name="classes/Session.php" />
+        <file name="classes/Store.php" />
+        <file name="lib/definitions.php" />
+        <file name="lib/functions.php" />
+        <file name="vendor/autoload.php" />
+        <file name="app/controllers/session.php" />
+        <file name="app/controllers/test.php" />
+        <file name="app/models/session.php" />
+        <file name="classes/DB/ConnectionProxy.php" />
+        <file name="classes/DB/ORM.php" />
+        <file name="classes/DB/Query.php" />
+        <file name="classes/Session/User.php" />
+        <file name="classes/Store/Request.php" />
+        <file name="classes/Store/Response.php" />
+        <file name="tests/App/AppTest.php" />
+        <file name="tests/App/ModelTest.php" />
+        <file name="tests/Input/InputTest.php" />
+        <file name="vendor/composer/autoload_classmap.php" />
+        <file name="vendor/composer/autoload_files.php" />
+        <file name="vendor/composer/autoload_namespaces.php" />
+        <file name="vendor/composer/autoload_psr4.php" />
+        <file name="vendor/composer/autoload_real.php" />
+        <file name="vendor/composer/autoload_static.php" />
+        <file name="vendor/composer/ClassLoader.php" />
+        <ignoreFiles>
+            <directory name="vendor" />
+        </ignoreFiles>
+    </projectFiles>
+</psalm>

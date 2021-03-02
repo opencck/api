@@ -1,0 +1,13 @@
+{
+	"name": "jsonrpc-api",
+	"version": "0.0.1",
+	"description": "JSONRPC API backend based on Doctrine (DBAL)",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Krupkin Sergey",
+	"devDependencies": {
+		"@prettier/plugin-php": "^0.14.0",
+		"prettier": "^2.0.4"
+	}
+}

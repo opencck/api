@@ -1,0 +1,43 @@
+##
+# @package    CCK
+# @copyright  Copyright (C) 2005 - 2020. All rights reserved.
+##
+Options +FollowSymlinks
+Options -Indexes
+
+# Disable access to .env files
+<Files ~ "^.*\.([Ee][Nn][Vv])">
+	Order allow,deny
+	Deny from all
+	Satisfy all
+</Files>
+
+RewriteEngine On
+
+# Return 403 Forbidden header and show the content of the root home page
+RewriteCond %{QUERY_STRING} base64_encode[^(]*\([^)]*\) [OR]
+RewriteCond %{QUERY_STRING} (<|%3C)([^s]*s)+cript.*(>|%3E) [NC,OR]
+RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
+RewriteRule .* index.php [F]
+
+## Custom redirects
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+RewriteCond %{HTTP_HOST} ^www\.(.*)$
+RewriteRule ^(.*)$ https://%1/$1 [L,R=301]
+
+RewriteRule ^sitemap\.xml$ /siteapp.php?method=sitemap [L]
+## End - Custom redirects
+
+## SEF
+# internally rewrite the request to the index.php script
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteCond %{REQUEST_URI} !^/index\.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule .* index.php [L]
+#
+## End - SEF
