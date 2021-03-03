@@ -30,7 +30,7 @@
 			"API\\Session\\": "classes/Session",
 			"API\\Store\\": "classes/Store",
 			"API\\Store\\Response\\": "classes/Store/Response",
-			"APP\\": ["app/", "app/controllers", "app/models"]
+			"APP\\": ["app/controller.php", "app/model.php", "app/controllers", "app/models"]
 		}
 	},
 	"autoload-dev": {
