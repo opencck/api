@@ -23,6 +23,9 @@
 		"vimeo/psalm": "^4.3"
 	},
 	"autoload": {
+		"files": [
+			"app/controller.php", "app/model.php"
+		],
 		"psr-4": {
 			"API\\": "classes/",
 			"API\\DB\\": "classes/DB/",
@@ -30,7 +33,7 @@
 			"API\\Session\\": "classes/Session",
 			"API\\Store\\": "classes/Store",
 			"API\\Store\\Response\\": "classes/Store/Response",
-			"APP\\": ["app/controller.php", "app/model.php", "app/controllers", "app/models"]
+			"APP\\": ["app/controllers", "app/models"]
 		}
 	},
 	"autoload-dev": {
