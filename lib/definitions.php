@@ -21,15 +21,15 @@ spl_autoload_register(function ($class) {
 			if ($filename = strtolower(array_pop($parts))) {
 				foreach (
 					[
-						'controller' => ['/app/', '/app/controllers/'],
-						'model' => ['/app/', '/app/models/'],
-						'helper' => ['/app/', '/app/helpers/'],
+						'controller' => ['/app/controllers/'],
+						'model' => ['/app/models/'],
+						'helper' => ['/app/helpers/'],
 						'router' => [],
 					]
 					as $pattern => $paths
 				) {
 					if ($filename == $pattern) {
-						$paths = array_merge(['/app/', '/includes/app/'], $paths);
+						$paths = array_merge(['/app/'], $paths, ['/vendor/opencck/api/app/']);
 					} elseif (endsWith($filename, $pattern)) {
 						$filename = str_replace($pattern, '', $filename);
 					}
