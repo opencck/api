@@ -3,7 +3,7 @@
 	"description": "JSONRPC API backend based on Doctrine (DBAL)",
 	"type": "library",
 	"license": "MIT",
-	"version": "1.0.5",
+	"version": "1.0.7",
 	"authors": [
 		{
 			"name": "Krupkin Sergey",
