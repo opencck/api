@@ -62,18 +62,15 @@ set_exception_handler('API\Exception::global_handler');
 /**
  * Load configuration
  */
-$dotenv = Dotenv\Dotenv::createImmutable(PATH_ROOT);
+$dotenv = Dotenv\Dotenv::createMutable(PATH_ROOT);
 $dotenv->load();
 if (isset($_ENV['APP_ENV'])) {
-	switch ($_ENV['APP_ENV']) {
-		case 'APITesting':
-			$dotenv = Dotenv\Dotenv::createImmutable(PATH_INCLUDES . '/tests');
-			$_ENV = array_merge($_ENV, $dotenv->load());
-			break;
-		case 'APPTesting':
-			$dotenv = Dotenv\Dotenv::createImmutable(PATH_ROOT . '/tests');
-			$_ENV = array_merge($_ENV, $dotenv->load());
-			break;
+	$paths = [
+		'APITesting' => PATH_INCLUDES,
+		'APPTesting' => PATH_ROOT
+	];
+	foreach (Dotenv\Dotenv::createArrayBacked($paths[$_ENV['APP_ENV']] . '/tests')->load() as $key => $value) {
+		$_ENV[$key] = $value;
 	}
 }
 
