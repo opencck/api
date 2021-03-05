@@ -20,9 +20,9 @@ class App {
 
 	/**
 	 * Visitor session
-	 * @var Session|null
+	 * @var Session
 	 */
-	private $session = null;
+	private $session;
 
 	/**
 	 * Application store
@@ -42,6 +42,7 @@ class App {
 	public function __construct() {
 		$this->store = new Store();
 		$this->router = new Router();
+		$this->session = new Session($this->router->getSessionLocation());
 
 		self::$_instance = $this;
 	}
@@ -63,9 +64,9 @@ class App {
 	 * @throws Exception
 	 */
 	public function getSession() {
-		if (is_null($this->session) && php_sapi_name() != "cli") {
+		/*if (is_null($this->session) && php_sapi_name() != "cli") {
 			throw new Exception('Session is not initialized', 403);
-		}
+		}*/
 		return $this->session;
 	}
 
@@ -92,7 +93,7 @@ class App {
 	public function init() {
 		try {
 			// Session initialization
-			$this->session = new Session($this->router->getSessionLocation());
+			//$this->session = new Session($this->router->getSessionLocation());
 
 			switch ($_SERVER['REQUEST_METHOD']) {
 				case 'POST':

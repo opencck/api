@@ -1,11 +1,12 @@
 <?php
 namespace APP;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
+use Exception;
 
 /**
- * @runTestsInSeparateProcesses
+ * Class ModelTest
+ * @package APP
  */
 class ModelTest extends TestCase {
 	/**

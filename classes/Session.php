@@ -52,6 +52,15 @@ class Session {
 	 * @param string $location
 	 */
 	public function __construct($location = 'session') {
+		$this->location = $location;
+
+		// Check that this is cli
+		if (php_sapi_name() === "cli") {
+			$this->id = session_id();
+			$this->data = new Input();
+			return;
+		}
+
 		// Instantiate new Database object
 		$this->db = DB::getInstance();
 
@@ -174,9 +183,9 @@ class Session {
 	 */
 	public function _write($id, $data) {
 		// Check that this is testing
-		if (isset($_ENV['APP_ENV']) && endsWith($_ENV['APP_ENV'], 'Testing')) {
+		/*if (isset($_ENV['APP_ENV']) && endsWith($_ENV['APP_ENV'], 'Testing')) {
 			return true;
-		}
+		}*/
 		$query = $this->db->prepare('REPLACE INTO sessions VALUES (?, ?, ?, ?, ?)');
 		$query->bindValue(1, $id);
 		$query->bindValue(2, $this->location);

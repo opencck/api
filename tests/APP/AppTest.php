@@ -1,12 +1,12 @@
 <?php
 namespace APP;
 
-use APP\Router;
 use PHPUnit\Framework\TestCase;
 use API\App;
 
 /**
- * @runTestsInSeparateProcesses
+ * Class AppTest
+ * @package APP
  */
 class AppTest extends TestCase {
 	/**

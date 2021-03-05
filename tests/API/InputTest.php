@@ -3,6 +3,10 @@ namespace API;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class InputTest
+ * @package API
+ */
 class InputTest extends TestCase {
 	/**
 	 * @dataProvider providerBoolean
