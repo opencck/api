@@ -47,10 +47,11 @@ class App {
 	}
 
 	/**
+	 * @param bool $inheritance
 	 * @return App
 	 */
-	public static function getInstance() {
-		if (self::$_instance != null) {
+	public static function getInstance($inheritance = true) {
+		if ($inheritance && self::$_instance != null) {
 			return self::$_instance;
 		}
 		return new self();
@@ -62,7 +63,7 @@ class App {
 	 * @throws Exception
 	 */
 	public function getSession() {
-		if (is_null($this->session)) {
+		if (is_null($this->session) && php_sapi_name() != "cli") {
 			throw new Exception('Session is not initialized', 403);
 		}
 		return $this->session;
@@ -130,9 +131,11 @@ class App {
 
 	/**
 	 * Application executing
-	 * @return void
+	 * @param bool $return
+	 * @param bool $silent
+	 * @return void|array
 	 */
-	public function execute() {
+	public function execute($return = false, $silent = false) {
 		foreach ($this->store->getRequest() as $item) {
 			$router = $this->router->parse($item->method, $item->params);
 			try {
@@ -152,18 +155,24 @@ class App {
 				$this->store->addError(APIException::local_handler($e, $item->id));
 			}
 		}
-
-		$this->output();
+		if (!$silent) {
+			return $this->output($return);
+		}
 	}
 
 	/**
 	 * Application output
-	 * @return void
+	 * @param bool $return
+	 * @return void|array
 	 */
-	public function output() {
-		if (php_sapi_name() != 'cli') {
-			header('Content-Type: application/json');
+	public function output($return = false) {
+		if ($return) {
+			return $this->store->getResponse();
+		} else {
+			if (php_sapi_name() != 'cli') {
+				header('Content-Type: application/json');
+			}
+			echo json_encode($this->store->getResponse());
 		}
-		echo json_encode($this->store->getResponse());
 	}
 }
