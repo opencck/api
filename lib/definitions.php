@@ -55,9 +55,10 @@ spl_autoload_register(function ($class) {
 });
 
 /**
- * Global error handler
+ * Global exception handler
  */
 set_exception_handler('API\Exception::global_handler');
+set_error_handler(function(){}); // todo set_error_handler
 
 /**
  * Load configuration

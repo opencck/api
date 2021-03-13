@@ -29,8 +29,10 @@
 		"psr-4": {
 			"API\\": "classes/",
 			"API\\DB\\": "classes/DB/",
+			"API\\DB\\Cache\\": "classes/DB/Cache",
 			"API\\DB\\ORM\\": "classes/DB/ORM",
 			"API\\Session\\": "classes/Session",
+			"API\\Session\\Handler\\": "classes/Session/Handler",
 			"API\\Store\\": "classes/Store",
 			"API\\Store\\Response\\": "classes/Store/Response",
 			"APP\\": ["app/controllers", "app/models"]

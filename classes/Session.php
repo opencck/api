@@ -1,7 +1,9 @@
 <?php
 namespace API;
 
+use API\DB\Cache;
 use API\DB\ConnectionProxy;
+use API\Session\Handler;
 use API\Session\User;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
@@ -12,10 +14,10 @@ use Doctrine\DBAL\DBALException;
  */
 class Session {
 	/**
-	 * DataBase Abstract Layer Connection
-	 * @var Connection|ConnectionProxy
+	 * Session handler
+	 * @var Handler|null
 	 */
-	private $db;
+	private $hander = null;
 
 	/**
 	 * Session ID
@@ -55,18 +57,31 @@ class Session {
 		$this->location = $location;
 
 		// Check that this is cli
-		if (php_sapi_name() === "cli") {
+		if (php_sapi_name() === 'cli') {
 			$this->id = session_id();
 			$this->data = new Input();
 			return;
 		}
 
-		// Instantiate new Database object
-		$this->db = DB::getInstance();
+		// Check cache session handler
+		$cache = Cache::getInstance();
+		// If it was not possible to receive cache go to the session in the database
+		if (count($cache->getHandlers($_ENV['SESSIONS_HANDLER'] ? [$_ENV['SESSIONS_HANDLER']] : null))) {
+			// Set Redis Session Handler
+			$this->hander = new Handler\CacheHandler($this->location);
+		} else {
+			// Set DB Session Handler
+			$this->hander = new Handler\DBHandler($this->location);
+		}
 
-		// Set session name
-		session_name($location);
-		$this->location = $location;
+		session_set_save_handler(
+			[$this, '_open'],
+			[$this, '_close'],
+			[$this, '_read'],
+			[$this, '_write'],
+			[$this, '_destroy'],
+			[$this, '_gc']
+		);
 
 		// Set session duration
 		ini_set('session.gc_maxlifetime', $_ENV['SYS_COOKIE_LIFETIME']);
@@ -79,21 +94,15 @@ class Session {
 			$_ENV['SYS_COOKIE_HTTP_ONLY'] === 'true'
 		);
 
-		// Set handler to override SESSION
-		session_set_save_handler(
-			[$this, '_open'],
-			[$this, '_close'],
-			[$this, '_read'],
-			[$this, '_write'],
-			[$this, '_destroy'],
-			[$this, '_gc']
-		);
-
+		// Set session name
+		session_name($location);
 		// Start the session
 		session_start();
 
 		// Set session id
 		$this->id = session_id();
+		// Put data into input
+		$this->data = new Input($_SESSION);
 
 		// Refresh visitor cookie
 		setcookie(
@@ -105,9 +114,6 @@ class Session {
 			$_ENV['SYS_COOKIE_SECURE'] === 'true',
 			$_ENV['SYS_COOKIE_HTTP_ONLY'] === 'true'
 		);
-
-		// Put data into input
-		$this->data = new Input($_SESSION);
 	}
 
 	/**
@@ -116,6 +122,23 @@ class Session {
 	 */
 	public static function getInstance() {
 		return App::getInstance()->getSession();
+	}
+
+	/**
+	 * Set handler to override SESSION
+	 */
+	private function sessionSetDBSaveHandler() {
+		// Instantiate new Database object
+		$this->db = DB::getInstance();
+
+		session_set_save_handler(
+			[$this, '_open'],
+			[$this, '_close'],
+			[$this, '_read'],
+			[$this, '_write'],
+			[$this, '_destroy'],
+			[$this, '_gc']
+		);
 	}
 
 	/**
@@ -136,10 +159,12 @@ class Session {
 
 	/**
 	 * Session @_open callback
+	 * @param string $path
+	 * @param string $name
 	 * @return bool
 	 */
-	public function _open() {
-		return $this->db->isConnected();
+	public function _open($path, $name) {
+		return $this->hander->open($path, $name);
 	}
 
 	/**
@@ -147,9 +172,7 @@ class Session {
 	 * @return bool
 	 */
 	public function _close() {
-		// Close the database connection
-		$this->db->close();
-		return !$this->db->isConnected();
+		return $this->hander->close();
 	}
 
 	/**
@@ -159,19 +182,15 @@ class Session {
 	 * @throws DBALException
 	 */
 	public function _read($id) {
-		$query = $this->db->query('SELECT data, users_id FROM sessions WHERE id = ? AND location = ?');
-		$query->bindValue(1, $id);
-		$query->bindValue(2, $this->location);
-		$query->execute();
+		$session = $this->hander->read($id);
 
-		if ($row = $query->fetch()) {
-			if ($row['users_id']) {
-				$this->user = User::load($row['users_id']);
-			}
-			return $row['data'];
-		} else {
-			return '';
+		// Load session user
+		if ($session['users_id']) {
+			$this->user = User::load($session['users_id']);
+			$this->user_id = $session['users_id'];
 		}
+
+		return $session['data'];
 	}
 
 	/**
@@ -182,18 +201,7 @@ class Session {
 	 * @throws DBALException
 	 */
 	public function _write($id, $data) {
-		// Check that this is testing
-		/*if (isset($_ENV['APP_ENV']) && endsWith($_ENV['APP_ENV'], 'Testing')) {
-			return true;
-		}*/
-		$query = $this->db->prepare('REPLACE INTO sessions VALUES (?, ?, ?, ?, ?)');
-		$query->bindValue(1, $id);
-		$query->bindValue(2, $this->location);
-		$query->bindValue(3, time());
-		$query->bindValue(4, isset($this->user->id) ? $this->user->id : 0);
-		$query->bindValue(5, $data);
-
-		return $query->execute();
+		return $this->hander->write($id, $data, $this->user_id);
 	}
 
 	/**
@@ -203,15 +211,7 @@ class Session {
 	 * @throws DBALException
 	 */
 	public function _destroy($id) {
-		// Check that this is testing
-		if (isset($_ENV['APP_ENV']) && endsWith($_ENV['APP_ENV'], 'Testing')) {
-			return true;
-		}
-		$query = $this->db->prepare('DELETE FROM sessions WHERE id = ? AND location = ?');
-		$query->bindValue(1, $id);
-		$query->bindValue(2, $this->location);
-
-		return $query->execute();
+		return $this->hander->destroy($id);
 	}
 
 	/**
@@ -221,11 +221,7 @@ class Session {
 	 * @throws DBALException
 	 */
 	public function _gc($lifetime) {
-		$old = time() - intval($lifetime); // Calculate what is to be deemed old
-		$query = $this->db->prepare('DELETE FROM sessions WHERE access < ?');
-		$query->bindValue(1, $old);
-
-		return $query->execute();
+		return $this->hander->gc(intval($lifetime));
 	}
 
 	/**
@@ -257,6 +253,7 @@ class Session {
 	 */
 	public function delete($key) {
 		unset($_SESSION[$key]);
+		$this->data->delete($key);
 	}
 
 	/**
@@ -267,7 +264,8 @@ class Session {
 	 */
 	public function setUser($user) {
 		$this->user = $user;
-		return $this->setUserId(isset($user->id) ? $user->id : null);
+		$this->user_id = isset($user->id) ? $user->id : null;
+		return $this->hander->setUserId($this->id, $this->user_id);
 	}
 
 	/**
@@ -276,22 +274,6 @@ class Session {
 	 */
 	public function getUser() {
 		return $this->user;
-	}
-
-	/**
-	 * User session auth
-	 * @param integer|null $user_id
-	 * @return bool
-	 * @throws DBALException
-	 */
-	private function setUserId($user_id) {
-		$this->user_id = $user_id;
-		$query = $this->db->prepare('UPDATE sessions SET users_id = ? WHERE id = ? AND location = ?');
-		$query->bindValue(1, !is_null($user_id) ? $user_id : 0);
-		$query->bindValue(2, $this->id);
-		$query->bindValue(3, $this->location);
-
-		return $query->execute();
 	}
 
 	/**
