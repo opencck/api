@@ -1,47 +1,51 @@
 {
-	"name": "opencck/api",
-	"description": "JSONRPC API backend based on Doctrine (DBAL)",
-	"type": "library",
-	"license": "MIT",
-	"version": "1.1.1",
-	"authors": [
-		{
-			"name": "Krupkin Sergey",
-			"email": "rekrytkw@gmail.com",
-			"homepage": "https://vk.com/krupkin.sergey"
-		}
-	],
-	"require": {
-		"php": "^7.1 || ^8.0",
-		"doctrine/dbal": "^2.10",
-		"doctrine/collections": "1.6.4",
-		"vlucas/phpdotenv": "^5.3.0"
-	},
-	"require-dev": {
-		"phpunit/phpunit": "^7.0 || ^8.0 || ^9.0",
-		"phpunit/php-invoker": "^3.0",
-		"vimeo/psalm": "^4.3"
-	},
-	"autoload": {
-		"files": [
-			"app/controller.php", "app/model.php"
-		],
-		"psr-4": {
-			"API\\": "classes/",
-			"API\\DB\\": "classes/DB/",
-			"API\\DB\\Cache\\": "classes/DB/Cache",
-			"API\\DB\\ORM\\": "classes/DB/ORM",
-			"API\\Session\\": "classes/Session",
-			"API\\Session\\Handler\\": "classes/Session/Handler",
-			"API\\Store\\": "classes/Store",
-			"API\\Store\\Response\\": "classes/Store/Response",
-			"APP\\": ["app/controllers", "app/models"]
-		}
-	},
-	"autoload-dev": {
-		"psr-4": {
-			"API\\": "tests/API",
-			"APP\\": "tests/APP"
-		}
-	}
+    "name": "opencck/api",
+    "description": "JSONRPC API backend based on Doctrine (DBAL)",
+    "type": "library",
+    "license": "MIT",
+    "version": "1.1.2",
+    "authors": [
+        {
+            "name": "Krupkin Sergey",
+            "email": "rekrytkw@gmail.com",
+            "homepage": "https://vk.com/krupkin.sergey"
+        }
+    ],
+    "require": {
+        "php": "^7.1 || ^8.0",
+        "doctrine/dbal": "^2.10",
+        "doctrine/collections": "1.6.4",
+        "vlucas/phpdotenv": "^5.3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0",
+        "phpunit/php-invoker": "^3.0",
+        "vimeo/psalm": "^4.3"
+    },
+    "autoload": {
+        "files": [
+            "app/controller.php",
+            "app/model.php"
+        ],
+        "psr-4": {
+            "API\\": "classes/",
+            "API\\DB\\": "classes/DB/",
+            "API\\DB\\Cache\\": "classes/DB/Cache",
+            "API\\DB\\ORM\\": "classes/DB/ORM",
+            "API\\Session\\": "classes/Session",
+            "API\\Session\\Handler\\": "classes/Session/Handler",
+            "API\\Store\\": "classes/Store",
+            "API\\Store\\Response\\": "classes/Store/Response",
+            "APP\\": [
+                "app/controllers",
+                "app/models"
+            ]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "API\\": "tests/API",
+            "APP\\": "tests/APP"
+        }
+    }
 }

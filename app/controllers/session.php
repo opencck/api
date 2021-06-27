@@ -9,20 +9,20 @@ use API\Session;
  * @package APP
  */
 class SessionController extends Controller {
-	/**
-	 * @param Input $params
-	 * @param string|integer|null $id
-	 * @return Session|null
-	 */
-	public function default($params, $id = null) {
-		return $this->session;
-	}
+    /**
+     * @param Input $params
+     * @param string|integer|null $id
+     * @return Session|null
+     */
+    public function default($params, $id = null) {
+        return $this->session;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function test() {
-		$this->session->set('test', ['hello']);
-		return ['test' => $this->session->get('test')];
-	}
+    /**
+     * @return array
+     */
+    public function test() {
+        $this->session->set('test', ['hello']);
+        return ['test' => $this->session->get('test')];
+    }
 }

@@ -1,12 +1,12 @@
 {
-	"name": "opencck-api",
-	"description": "JSONRPC API backend based on Doctrine (DBAL)",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"author": "Krupkin Sergey <rekrytkw@gmail.com>",
-	"devDependencies": {
-		"@prettier/plugin-php": "^0.14.0",
-		"prettier": "^2.0.4"
-	}
+    "name": "opencck-api",
+    "description": "JSONRPC API backend based on Doctrine (DBAL)",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Krupkin Sergey <rekrytkw@gmail.com>",
+    "devDependencies": {
+        "@prettier/plugin-php": "^0.14.0",
+        "prettier": "^2.0.4"
+    }
 }

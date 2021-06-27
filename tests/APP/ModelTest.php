@@ -9,22 +9,22 @@ use Exception;
  * @package APP
  */
 class ModelTest extends TestCase {
-	/**
-	 * Recursive structural grouping of elements
-	 * @dataProvider dataProvider
-	 * @param $items array
-	 * @param $groups array
-	 * @param $getAlias string
-	 * @param $expected array
-	 * @throws Exception
-	 */
-	public function testGroup($items, $groups, $getAlias, $expected) {
-		$model = new Model();
-		$this->assertEquals($expected, $model->group($items, $groups, $getAlias));
-	}
-	public function dataProvider() {
-		// prettier-ignore
-		return [
+    /**
+     * Recursive structural grouping of elements
+     * @dataProvider dataProvider
+     * @param $items array
+     * @param $groups array
+     * @param $getAlias string
+     * @param $expected array
+     * @throws Exception
+     */
+    public function testGroup($items, $groups, $getAlias, $expected) {
+        $model = new Model();
+        $this->assertEquals($expected, $model->group($items, $groups, $getAlias));
+    }
+    public function dataProvider() {
+        // prettier-ignore
+        return [
 			'simplify' => [
 				[ // items
 					['a.id' => 1, 'a.name' => 'value']
@@ -429,5 +429,5 @@ class ModelTest extends TestCase {
 				],
 			],
 		];
-	}
+    }
 }

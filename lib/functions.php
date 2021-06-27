@@ -7,14 +7,14 @@
  * @return void
  */
 function dbg($mixed, $exit = true) {
-	if (php_sapi_name() == "cli") {
-		echo json_encode($mixed, JSON_PRETTY_PRINT);
-	} else {
-		echo '<pre>' . print_r($mixed, true) . '</pre>';
-	}
-	if ($exit) {
-		exit();
-	}
+    if (php_sapi_name() == 'cli') {
+        echo json_encode($mixed, JSON_PRETTY_PRINT);
+    } else {
+        echo '<pre>' . print_r($mixed, true) . '</pre>';
+    }
+    if ($exit) {
+        exit();
+    }
 }
 
 /**
@@ -24,7 +24,7 @@ function dbg($mixed, $exit = true) {
  * @return bool
  */
 function startsWith($haystack, $needle) {
-	return substr_compare($haystack, $needle, 0, strlen($needle)) === 0;
+    return substr_compare($haystack, $needle, 0, strlen($needle)) === 0;
 }
 
 /**
@@ -34,5 +34,5 @@ function startsWith($haystack, $needle) {
  * @return bool
  */
 function endsWith($haystack, $needle) {
-	return substr_compare($haystack, $needle, -1*strlen($needle)) === 0;
+    return substr_compare($haystack, $needle, -1 * strlen($needle)) === 0;
 }
